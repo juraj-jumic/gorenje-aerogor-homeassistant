@@ -101,6 +101,11 @@ The full reverse-engineering process is documented in [docs/04-reverse-engineeri
 5. CRC algorithm: **CRC-16/Modbus over bytes [2:-3], stored little-endian**.
 6. Built and verified an encoder that reproduces all captured commands byte-perfectly.
 
+End result:
+
+<img width="1413" height="796" alt="image" src="https://github.com/user-attachments/assets/818070b6-7a4b-403f-bccf-5bc9d92f908c" />
+
+
 The whole project took about three evenings of work.
 
 ## Acknowledgements
