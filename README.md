@@ -22,28 +22,28 @@ Known rebadges include Gorenje Aerogor, Neoheat, and several other European bran
 ## How it works (architecture)
 
 ```
-┌──────────────┐    serial      ┌──────────┐  Wi-Fi   ┌─────────────┐
-│  Heat pump   │ ◄────RS-485──► │  Heat-   │ ◄──RS-232► USR-W600   │
-│  controller  │                │  star    │           │  module     │
-│  (Modbus     │                │  panel   │           │             │
-│   internal)  │                │  (WinCE) │           │             │
-└──────────────┘                └──────────┘           └──────┬──────┘
-                                                              │ Wi-Fi
-                                                              ▼
-                                                       ┌─────────────┐
-                                                       │ Home LAN    │
-                                                       │             │
-                                                       │  ┌────────┐ │
-                                                       │  │ Bridge │ │  ← Python
-                                                       │  │ (this  │ │     script,
-                                                       │  │  repo) │ │     runs as
-                                                       │  └────┬───┘ │     systemd
-                                                       │       │ MQTT│     service
-                                                       │  ┌────▼───┐ │     on Proxmox
-                                                       │  │ Home   │ │     or LXC
-                                                       │  │ Assist │ │
-                                                       │  └────────┘ │
-                                                       └─────────────┘
+┌──────────────┐    serial      ┌──────────┐  Wi-Fi      ┌─────────────┐
+│  Heat pump   │ ◄────RS-485──► │  Heat-   │ ◄──RS-232──►│   USR-W600  │
+│  controller  │                │  star    │             │    module   │
+│  (Modbus     │                │  panel   │             │             │
+│   internal)  │                │  (WinCE) │             │             │
+└──────────────┘                └──────────┘             └──────┬──────┘
+                                                                │ Wi-Fi
+                                                                ▼
+                                                         ┌─────────────┐
+                                                         │ Home LAN    │
+                                                         │             │
+                                                         │  ┌────────┐ │
+                                                         │  │ Bridge │ │  ← Python
+                                                         │  │ (this  │ │     script,
+                                                         │  │  repo) │ │     runs as
+                                                         │  └────┬───┘ │     systemd
+                                                         │       │ MQTT│     service
+                                                         │  ┌────▼───┐ │     on Proxmox
+                                                         │  │ Home   │ │     or LXC
+                                                         │  │ Assist │ │
+                                                         │  └────────┘ │
+                                                         └─────────────┘
 ```
 
 The W600 module is configured to expose its serial traffic on TCP port 8899 (SocketA). The Python bridge connects there, parses the proprietary binary frames into sensor values, publishes them to MQTT with Home Assistant discovery, and accepts write commands back from MQTT.
