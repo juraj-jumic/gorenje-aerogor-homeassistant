@@ -1,0 +1,13 @@
+[Unit]
+Description=W600 ↔ MyHeatPump cloud transparent proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/aerogor/mitm_proxy.py
+WorkingDirectory=/opt/aerogor
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

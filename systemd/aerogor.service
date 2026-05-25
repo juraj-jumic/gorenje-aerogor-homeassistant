@@ -1,0 +1,17 @@
+[Unit]
+Description=Aerogor heat pump → Home Assistant MQTT bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Edit these to match your setup, then `systemctl daemon-reload && systemctl restart aerogor`
+Environment="W600_HOST=192.168.0.50"
+Environment="MQTT_HOST=192.168.0.20"
+Environment="MQTT_USER=mqtt"
+Environment="MQTT_PASS=CHANGE_ME"
+ExecStart=/usr/bin/python3 /opt/aerogor/aerogor_bridge.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

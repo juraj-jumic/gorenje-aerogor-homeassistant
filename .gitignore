@@ -1,0 +1,23 @@
+# Capture files from MITM analysis
+*.bin
+from_w600_*
+to_w600_*
+
+# Database extracts (may contain device-specific identifiers)
+HeatStar.db
+HeatStar.exe
+*.dll
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
