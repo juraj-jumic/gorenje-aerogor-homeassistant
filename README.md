@@ -98,7 +98,7 @@ The full reverse-engineering process is documented in [docs/04-reverse-engineeri
 2. Extracted `HeatStar.db` (SQLite) from the Windows CE panel via a network share — gave 500 parameter definitions including names, ranges, and live sensor field schemas.
 3. Set up an MITM proxy by repointing the W600's SocketB cloud destination to a local machine, transparently forwarding to `myheatpump.com` while logging both directions.
 4. Triggered known actions in the MyHeatPump app (DHW setpoint changes, mode changes, power toggles) and decoded the captured cloud→W600 write commands.
-5. Cracked the CRC algorithm: **CRC-16/Modbus over bytes [2:-3], stored little-endian**.
+5. CRC algorithm: **CRC-16/Modbus over bytes [2:-3], stored little-endian**.
 6. Built and verified an encoder that reproduces all captured commands byte-perfectly.
 
 The whole project took about three evenings of work.
