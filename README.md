@@ -22,28 +22,28 @@ Known rebadges include Gorenje Aerogor, Neoheat, and several other European bran
 ## How it works (architecture)
 
 ```
-┌──────────────┐    serial      ┌──────────┐  Wi-Fi   ┌─────────────┐
-│  Heat pump   │ ◄────RS-485──► │  Heat-   │ ◄──RS-232► USR-W600   │
-│  controller  │                │  star    │           │  module     │
-│  (Modbus     │                │  panel   │           │             │
-│   internal)  │                │  (WinCE) │           │             │
-└──────────────┘                └──────────┘           └──────┬──────┘
-                                                              │ Wi-Fi
-                                                              ▼
-                                                       ┌─────────────┐
-                                                       │ Home LAN    │
-                                                       │             │
-                                                       │  ┌────────┐ │
-                                                       │  │ Bridge │ │  ← Python
-                                                       │  │ (this  │ │     script,
-                                                       │  │  repo) │ │     runs as
-                                                       │  └────┬───┘ │     systemd
-                                                       │       │ MQTT│     service
-                                                       │  ┌────▼───┐ │     on Proxmox
-                                                       │  │ Home   │ │     or LXC
-                                                       │  │ Assist │ │
-                                                       │  └────────┘ │
-                                                       └─────────────┘
+┌──────────────┐    serial      ┌──────────┐  Wi-Fi      ┌─────────────┐
+│  Heat pump   │ ◄────RS-485──► │  Heat-   │ ◄──RS-232──►│   USR-W600  │
+│  controller  │                │  star    │             │    module   │
+│  (Modbus     │                │  panel   │             │             │
+│   internal)  │                │  (WinCE) │             │             │
+└──────────────┘                └──────────┘             └──────┬──────┘
+                                                                │ Wi-Fi
+                                                                ▼
+                                                         ┌─────────────┐
+                                                         │ Home LAN    │
+                                                         │             │
+                                                         │  ┌────────┐ │
+                                                         │  │ Bridge │ │  ← Python
+                                                         │  │ (this  │ │     script,
+                                                         │  │  repo) │ │     runs as
+                                                         │  └────┬───┘ │     systemd
+                                                         │       │ MQTT│     service
+                                                         │  ┌────▼───┐ │     on Proxmox
+                                                         │  │ Home   │ │     or LXC
+                                                         │  │ Assist │ │
+                                                         │  └────────┘ │
+                                                         └─────────────┘
 ```
 
 The W600 module is configured to expose its serial traffic on TCP port 8899 (SocketA). The Python bridge connects there, parses the proprietary binary frames into sensor values, publishes them to MQTT with Home Assistant discovery, and accepts write commands back from MQTT.
@@ -98,8 +98,13 @@ The full reverse-engineering process is documented in [docs/04-reverse-engineeri
 2. Extracted `HeatStar.db` (SQLite) from the Windows CE panel via a network share — gave 500 parameter definitions including names, ranges, and live sensor field schemas.
 3. Set up an MITM proxy by repointing the W600's SocketB cloud destination to a local machine, transparently forwarding to `myheatpump.com` while logging both directions.
 4. Triggered known actions in the MyHeatPump app (DHW setpoint changes, mode changes, power toggles) and decoded the captured cloud→W600 write commands.
-5. Cracked the CRC algorithm: **CRC-16/Modbus over bytes [2:-3], stored little-endian**.
+5. CRC algorithm: **CRC-16/Modbus over bytes [2:-3], stored little-endian**.
 6. Built and verified an encoder that reproduces all captured commands byte-perfectly.
+
+End result:
+
+<img width="1413" height="796" alt="image" src="https://github.com/user-attachments/assets/818070b6-7a4b-403f-bccf-5bc9d92f908c" />
+
 
 The whole project took about three evenings of work.
 
