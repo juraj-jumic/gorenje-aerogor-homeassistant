@@ -5,13 +5,18 @@ Wants=network-online.target
 
 [Service]
 # Edit these to match your setup, then `systemctl daemon-reload && systemctl restart aerogor`
-Environment="W600_HOST=192.168.0.50"
-Environment="MQTT_HOST=192.168.0.20"
-Environment="MQTT_USER=mqtt"
+Environment="W600_HOST=192.168.0.XXX"
+Environment="MQTT_HOST=192.168.0.XXX"
+Environment="MQTT_USER=USER"
 Environment="MQTT_PASS=CHANGE_ME"
-ExecStart=/usr/bin/python3 /opt/aerogor/aerogor_bridge.py
+ExecStart=/usr/bin/python3 /root/aerogor_bridge_v2.py
+
+# Restart on any exit, including the watchdog's os._exit(75)
 Restart=always
 RestartSec=10
+
+# Belt-and-suspenders: if the watchdog ever fails too, force restart every 7 days
+RuntimeMaxSec=604800
 
 [Install]
 WantedBy=multi-user.target
